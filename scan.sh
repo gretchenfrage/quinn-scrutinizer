@@ -5,8 +5,8 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'  # No Color
 
-echo -e "${GREEN}[ INFO  ]${NC} scanning"
-echo
+echo -e "${GREEN}[ INFO  ]${NC} Scanning"
+#echo
 
 # Initialize counters
 total_files=0
@@ -36,7 +36,7 @@ for dir in runs/*; do
     ((total_files++))
 
     if [ "$status" -ne 0 ]; then
-        echo -e "${YELLOW}[ WARNING ]${NC} Non-zero status ($status) in $dir"
+        #echo -e "${YELLOW}[ WARNING ]${NC} Non-zero status ($status) in $dir"
         ((non_zero_status_files++))
 
         # Check and log failed tests
@@ -47,7 +47,7 @@ for dir in runs/*; do
             # Loop over each test and print it
             while IFS= read -r test; do
                 if [[ -n "$test" ]]; then  # Only process non-empty lines
-                    echo -e " - ${test}"
+                    #echo -e " - ${test}"
                     echo "$test" >> "$failed_tests_file"  # Save to the file
                 fi
             done <<< "$failed_tests"
@@ -64,9 +64,9 @@ else
 fi
 
 echo
-echo -e "${GREEN}[ INFO  ]${NC} Total files scanned: $total_files"
-echo -e "${GREEN}[ INFO  ]${NC} Non-zero status files: $non_zero_status_files"
-echo -e "${GREEN}[ INFO  ]${NC} Percentage of non-zero status files: ${formatted_percentage}%"
+echo -e "${GREEN}[ INFO  ]${NC} Total test runs: $total_files"
+echo -e "${GREEN}[ INFO  ]${NC} Errored test runs: $non_zero_status_files"
+echo -e "${GREEN}[ INFO  ]${NC} Percentage of errored test runs: ${formatted_percentage}%"
 
 # Calculate total disk space used by the runs directory
 disk_usage_mb=$(du -sm runs | awk '{print $1}')
@@ -91,10 +91,11 @@ test_counts = Counter(test_names)
 total_runs = $total_files
 max_test_name_length = max(len(test) for test in test_counts)  # Determine padding for test names
 percentage_width = 8  # Fixed width for percentage column
+count_width = 6  # Fixed width for raw count column
 
 for test, count in sorted(test_counts.items()):
     percentage = 100 * count / total_runs
-    print(f'{test:<{max_test_name_length}} {percentage:>{percentage_width}.5f}%')
+    print(f'{test:<{max_test_name_length}} {percentage:>{percentage_width}.5f}% {count:>{count_width}}')
 " < "$failed_tests_file"
 else
     echo -e "${GREEN}[ INFO  ]${NC} No test failures recorded."
